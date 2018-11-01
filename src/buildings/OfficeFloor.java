@@ -3,15 +3,17 @@ import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
+
 public class OfficeFloor implements Floor {
     class Node {
         Node next;    // указатель на следующий элемент
-        Office valueOffice;  // данные
+        Office valueOffice;  // todo Space а не Office!
     }
+    //todo здесь логично хранить size, как в DwellingFloor
     private Node head;
     //приватный метод получения узла по его номеру
     private Node getNode(int number){
-        Node temp = head;
+        Node temp = head;  //todo имя гавно
         for(int i=0;i<number;i++)
         {
             temp = temp.next;
@@ -20,8 +22,8 @@ public class OfficeFloor implements Floor {
     }
     //приватный метод добавления узла в список по номеру
     private void addNode(int number, Node node){
-        Node temp = head;
-        for(int i=0;i<number-1;i++)
+        Node temp = head; //todo имя гавно
+        for(int i=0;i<number-1;i++) //todo а дублировать код метода getNode() не стремно? Делаешь проверку number ==0 , если да - то работаешь с head, если нет - вызываешь getNode(number - 1)
         {
             temp = temp.next;
         }
@@ -30,8 +32,8 @@ public class OfficeFloor implements Floor {
     }
     //приватный метод удаления узла из списка по его номеру
     private void removeNode(int number){
-        Node temp = head;
-        for(int i=0;i<number-1;i++)
+        Node temp = head; //todo имя гавно
+        for(int i=0;i<number-1;i++) //todo аналогично addNode()
         {
             temp = temp.next;
         }
@@ -46,8 +48,8 @@ public class OfficeFloor implements Floor {
     public OfficeFloor(int countOffice){
         this();
         head.valueOffice=new Office();
-        Node temp = head;
-        for(int i=1;i<countOffice;i++)
+        Node temp = head; //todo имя гавно
+        for(int i=1;i<countOffice;i++) //todo Не надо здесь создавать структуру нодов, ибо при вставке ты все равно новые ноды создаешь. Просто создаешь head и все
         {
             Node node = new Node();
             node.valueOffice = new Office();
@@ -57,10 +59,10 @@ public class OfficeFloor implements Floor {
         temp.next=head;
     }
     //Конструктор может принимать массив офисов этажа
-    public OfficeFloor(Office [] arrayOffice){
+    public OfficeFloor(Office [] arrayOffice){ //todo массив не Office[], a Space[]
         this();
         head.valueOffice=arrayOffice[0];
-        Node temp = head;
+        Node temp = head; //todo имя гавно
         for(int i=1;i<arrayOffice.length;i++)
         {
             Node node = new Node();
@@ -72,7 +74,8 @@ public class OfficeFloor implements Floor {
     }
     //метод получения количества офисов на этаже
     public int getSize(){
-        Node temp = head;
+        //todo Я начал уже тебя ненавидеть =)))))))) Храни поле size, чтоб каждый раз не пересчитывать число space-ов
+        Node temp = head; //todo имя гавно
         int  count = 0;
         do{
             count++;
@@ -83,7 +86,7 @@ public class OfficeFloor implements Floor {
     }
     //метод получения общей площади помещений этажа
     public int getAreaSpace(){
-        Node temp = head;
+        Node temp = head; //todo имя гавно
         int  area = 0;
         do
         {
@@ -95,7 +98,7 @@ public class OfficeFloor implements Floor {
     }
     //метод получения общего количества комнат этажа
     public int getCountRoomsOnSpace(){
-        Node temp = head;
+        Node temp = head; //todo имя гавно
         int  countOfRooms = 0;
         do
         {
@@ -106,15 +109,16 @@ public class OfficeFloor implements Floor {
         return countOfRooms;
     }
     //метод получения массива офисов этажа
-    public Office[] getArraySpace(){
+    public Office[] getArraySpace(){ //todo возвращаешь Space[], а не Office[]
        Office [] array = new Office[getSize()];
        for (int i=0;i<array.length;i++){
+           //todo нененене getNode(i) здесь вообще не эффективно. Гуляешь по нодам в цикле сама (Как в предыдущих методах) и каждый раз идешь к следующему по ссылке next. За один проход, а не за n*n как у тебя
            array[i]=getNode(i).valueOffice;
        }
        return array;
     }
     //метод получения офиса по его номеру на этаже
-    public Office getSpace(int number)
+    public Office getSpace(int number) //todo возвращаешь Space, а не Office
     {
         return getNode(number).valueOffice;
     }
@@ -124,7 +128,7 @@ public class OfficeFloor implements Floor {
         if ((number > getSize())||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();
         }
-        getNode(number).valueOffice=(Office)newOffice;
+        getNode(number).valueOffice=(Office)newOffice; //todo каст уйдет, как поменяешь тип поля value в ноде
     }
     //метод добавления нового офиса на этаже по будущему номеру офиса
     public void addNewSpace(int number, Space newOffice) {
@@ -132,7 +136,7 @@ public class OfficeFloor implements Floor {
             throw new SpaceIndexOutOfBoundsException();
         }
          Node newNode = new Node();
-         newNode.valueOffice = (Office) newOffice;
+         newNode.valueOffice = (Office) newOffice; //todo каст уйдет, как поменяешь тип поля value в ноде
          addNode(number, newNode);
 
     }
@@ -146,9 +150,10 @@ public class OfficeFloor implements Floor {
     }
     //метод getBestSpace() получения самого большого по площади офиса этажа
     public Office getBestSpace(){
-        Office officeMaxArea = getNode(0).valueOffice;
+        Office officeMaxArea = getNode(0).valueOffice; //todo Space, а не Office
         for(int i=1; i<getSize();i++)
         {
+            //todo нененене getNode(i) здесь вообще не эффективно. Гуляешь по нодам в цикле сама и каждый раз идешь к следующему по ссылке next. За один проход, а не за n*n как у тебя
             if((getNode(i).valueOffice!=null)&&(getNode(i).valueOffice.getArea()>officeMaxArea.getArea())){
                 officeMaxArea = getNode(i).valueOffice;
             }

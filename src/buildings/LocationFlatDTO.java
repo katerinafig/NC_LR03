@@ -1,8 +1,8 @@
 package buildings;
 
 public class LocationFlatDTO {
-    int floor;
-    int flat;
+    int floor; //todo floorNumber
+    int flat;  //todo spaceNumber
 
     public LocationFlatDTO(int floor, int flat) {
         this.floor = floor;
