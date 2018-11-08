@@ -10,7 +10,7 @@ public class OfficeFloor implements Floor {
         Space valueOffice;  // todo Space а не Office!
     }
 
-    int  size;//todo здесь логично хранить size, как в DwellingFloor
+    private int  size;//todo здесь логично хранить size, как в DwellingFloor
     private Node head;
     //приватный метод получения узла по его номеру
     private Node getNode(int number){
@@ -50,14 +50,10 @@ public class OfficeFloor implements Floor {
     }
     //Конструктор может принимать количество офисов на этаже
     public OfficeFloor(int countOffice){
-        size=countOffice;
+        head = new Node();
         head.valueOffice=new Office();
         Node currentNode = head; //todo имя гавно
-        for(int i=1;i<countOffice;i++) //todo Не надо здесь создавать структуру нодов, ибо при вставке ты все равно новые ноды создаешь. Просто создаешь head и все
-        {
-            currentNode.next.valueOffice=new Office();
-            currentNode=currentNode.next;
-        }
+        //todo Не надо здесь создавать структуру нодов, ибо при вставке ты все равно новые ноды создаешь. Просто создаешь head и все
         currentNode.next=head;
     }
     //Конструктор может принимать массив офисов этажа
@@ -69,8 +65,10 @@ public class OfficeFloor implements Floor {
         Node currentNode = head; //todo имя гавно
         for(int i=1;i<arrayOffice.length;i++)
         {
-            currentNode.next.valueOffice=arrayOffice[i];
-            currentNode=currentNode.next;
+            Node node = new Node();
+            node.valueOffice = arrayOffice[i];
+            currentNode.next=node;
+            currentNode=node;
         }
         currentNode.next=head;
     }
@@ -111,7 +109,7 @@ public class OfficeFloor implements Floor {
         //todo нененене getNode(i) здесь вообще не эффективно. Гуляешь по нодам в цикле сама (Как в предыдущих методах) и каждый раз идешь к следующему по ссылке next. За один проход, а не за n*n как у тебя
         do
         {
-            array[i]=getNode(i).valueOffice;
+            array[i]=currentNode.valueOffice;
             currentNode = currentNode.next;
             i++;
         }

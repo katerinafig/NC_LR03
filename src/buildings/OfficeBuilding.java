@@ -64,16 +64,16 @@ public class OfficeBuilding implements Building {
         this.size = size;
         if(size==countsOffice.length) {
             head.valueOfficeFloor=new OfficeFloor(countsOffice[0]);
-            Node temp = head; //todo имя гавно
+            Node currentNode = head; //todo имя гавно
             for (int i = 1; i < size; i++) {
                 Node node = new Node();
                 node.valueOfficeFloor = new OfficeFloor(countsOffice[i]);
-                temp.next=node;
-                node.past=temp;
-                temp=node;
+                currentNode.next=node;
+                node.past=currentNode;
+                currentNode=node;
             }
-            head.past = temp;
-            temp.next=head;
+            head.past = currentNode;
+            currentNode.next=head;
         }
     }
     //Конструктор может принимать массив этажей дома.
@@ -82,16 +82,16 @@ public class OfficeBuilding implements Building {
         this();
         size = arrayFloors.length;
         head.valueOfficeFloor=arrayFloors[0];
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         for (int i = 1; i < arrayFloors.length; i++) {
             Node node = new Node();
             node.valueOfficeFloor = arrayFloors[i];
-            temp.next=node;
-            node.past=temp;
-            temp=node;
+            currentNode.next=node;
+            node.past=currentNode;
+            currentNode=node;
         }
-        head.past = temp;
-        temp.next=head;
+        head.past = currentNode;
+        currentNode.next=head;
     }
     //метод получения общего количества этажей оффисного здания
     public int getSize() {
@@ -101,51 +101,51 @@ public class OfficeBuilding implements Building {
     //метод получения общего количества квартир офффисного здания
     public int getCountSpace() {
         int countFlats = 0;
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         do
         {
-            countFlats+=temp.valueOfficeFloor.getSize();
-            temp = temp.next;
+            countFlats+=currentNode.valueOfficeFloor.getSize();
+            currentNode = currentNode.next;
         }
-        while (temp!=head);
+        while (currentNode!=head);
         return countFlats;
     }
     //метод получения общей площади оффисов офффисного здания
     public int getAreaSpace() {
         int areaFlats = 0;
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         do
         {
-            areaFlats+=temp.valueOfficeFloor.getAreaSpace();
-            temp = temp.next;
+            areaFlats+=currentNode.valueOfficeFloor.getAreaSpace();
+            currentNode = currentNode.next;
         }
-        while (temp!=head);
+        while (currentNode!=head);
         return areaFlats;
     }
     //метод получения общего количества оффисов офффисного здания
     public int getCountRoomsOnBuilding() {
         int countRooms = 0;
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         do
         {
-            countRooms+=temp.valueOfficeFloor.getCountRoomsOnSpace();
-            temp = temp.next;
+            countRooms+=currentNode.valueOfficeFloor.getCountRoomsOnSpace();
+            currentNode = currentNode.next;
         }
-        while (temp!=head);
+        while (currentNode!=head);
         return countRooms;
     }
     //метод получения массива этажей офффисного здания
     public Floor[] getArrayFloors() {
         Floor[] arrayOffice = new Floor[getSize()]; //todo не OfficeFloor[], а Floor[]
         int i = 0;
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         do
         {
-            arrayOffice[i] = temp.valueOfficeFloor;
-            temp = temp.next;
+            arrayOffice[i] = currentNode.valueOfficeFloor;
+            currentNode = currentNode.next;
             i++;
         }
-        while (temp!=head);
+        while (currentNode!=head);
         return arrayOffice;
     }
     //метод получения объкта этажа по его номеру в офффисном здании
@@ -165,94 +165,104 @@ public class OfficeBuilding implements Building {
             getNode(number).valueOfficeFloor=newFloor; //todo каст уйдет, как поменяешь тип поля в ноде
 
     }
-    private LocationSpaceDTO getLocationFlat(int number)
+    private LocationSpaceDTO getLocationSpace(int number)
     {
         LocationSpaceDTO location = null;
-        int tempSize=0; //todo имя гавно
-        int count = 0; //todo имя гавно
+        int sizeFloor=0; //todo имя гавно
+        int sumSizeFloors = 0; //todo имя гавно
         if ((number >= getCountSpace())||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();
         }
         //todo нененене getFloor(i) здесь вообще не эффективно. Гуляешь по нодам в цикле сама (Как в предыдущих методах) и каждый раз идешь к следующему по ссылке next. За один проход, а не за n*n как у тебя
-        for (int i = 0; i < getSize(); i++) {
-            tempSize = getFloor(i).getSize();
-            if(number-count>=tempSize){
-                count += tempSize;
+        Node currentNode = head;
+        int i=0;
+        do
+        {
+            sizeFloor = currentNode.valueOfficeFloor.getSize();
+            if(number-sumSizeFloors>=sizeFloor){
+                sumSizeFloors += sizeFloor;
             }
             else{
-                location=new LocationSpaceDTO(i,number-count);
+                location=new LocationSpaceDTO(i,number-sumSizeFloors);
                 break;
             }
+            currentNode = currentNode.next;
+            i++;
         }
-
+        while (currentNode!=head);
         return location;
     }
     //метод получения объекта офиса по его номеру в офисном здании
     public Space getSpace(int number) {
 
-        LocationSpaceDTO temp = getLocationFlat(number); //todo имя гавно
-        if(temp!=null) {
-            return getFloor(temp.floorNumber).getSpace(temp.spaceNumber);
+        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo имя гавно
+        if(searchLocationSpace!=null) {
+            return getFloor(searchLocationSpace.floorNumber).getSpace(searchLocationSpace.spaceNumber);
         }
         else  return null;
     }
     //метод изменения объекта офиса по его номеру в доме и ссылке типа офиса
     public void setSpace(int number, Space newOffice) {
 
-        LocationSpaceDTO temp = getLocationFlat(number); //todo имя гавно
-        if(temp!=null) {
-            getFloor(temp.floorNumber).setSpace(temp.spaceNumber, newOffice);
+        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo имя гавно
+        if(searchLocationSpace!=null) {
+            getFloor(searchLocationSpace.floorNumber).setSpace(searchLocationSpace.spaceNumber, newOffice);
         }
     }
     //метод добавления офиса в здание по номеру офиса в здании и ссылке на офис
     public void addNewSpace(int number, Space newFlat)
     {
-        LocationSpaceDTO temp = getLocationFlat(number); //todo имя гавно
-        if(temp!=null) {
-            getFloor(temp.floorNumber).addNewSpace(temp.spaceNumber, newFlat);
+        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo имя гавно
+        if(searchLocationSpace!=null) {
+            getFloor(searchLocationSpace.floorNumber).addNewSpace(searchLocationSpace.spaceNumber, newFlat);
         }
         else getFloor(getSize()-1).addNewSpace(number-getCountSpace()+ getFloor(getSize()-1).getSize(), newFlat);
     }
     //метод удаления офиса по его номеру в здании.
     public void removeSpace(int number)
     {
-        LocationSpaceDTO temp = getLocationFlat(number); //todo имя гавно
-        if(temp!=null) {
-            getFloor(temp.floorNumber).removeSpace(temp.spaceNumber);
+        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo имя гавно
+        if(searchLocationSpace!=null) {
+            getFloor(searchLocationSpace.floorNumber).removeSpace(searchLocationSpace.spaceNumber);
         }
     }
     //метод получения самого большого по площади офиса здания
     public Space getBestSpace(){
-        Space officeMaxArea = getFloor(0).getBestSpace(); //todo не Office, а Space
-        for(int i=1;i<getSize();i++) {
+
+        Node currentNode = head.next;
+        Space officeMaxArea = head.valueOfficeFloor.getBestSpace(); //todo не Office, а Space
+        do
+        {
             //todo нененене getFloor(i) здесь вообще не эффективно. Гуляешь по нодам в цикле сама и каждый раз идешь к следующему по ссылке next. За один проход, а не за n*n как у тебя
-            Space temp = getFloor(i).getBestSpace(); //todo ну и имя - гавно =)))))), а тип - Space, а не Office
-            if(officeMaxArea.getArea() < temp.getArea())
+            Space currentSpace = currentNode.valueOfficeFloor.getBestSpace(); //todo ну и имя - гавно =)))))), а тип - Space, а не Office
+            if(officeMaxArea.getArea() < currentSpace.getArea())
             {
-                officeMaxArea = temp;
+                officeMaxArea = currentSpace;
             }
+            currentNode = currentNode.next;
         }
+        while (currentNode!=head);
         return officeMaxArea;
     }
     //метод получения отсортированного по убыванию площадей массива офисов
     public Space [] sortByAreaSpace()
     {
-        int k=0;
-        Space buf = null; //todo имя гавно
+        int officeCount=0;
+        Space containerOffice; //todo имя гавно
         Space [] arrayFlat = new Space[getCountSpace()]; //todo Space[], а не Office[]
         for(int i=0;i<getSize();i++) {
             for(int j = 0; j< getFloor(i).getSize(); j++) {
                 if(getFloor(i).getSpace(j)!=null)
-                    arrayFlat[k] = getFloor(i).getSpace(j);
-                k++;
+                    arrayFlat[officeCount] = getFloor(i).getSpace(j);
+                officeCount++;
             }
         }
-        for (int out = k - 1; out >= 1; out--){
+        for (int out = officeCount - 1; out >= 1; out--){
             for (int in = 0; in < out; in++){
                 if(arrayFlat[in].getArea() < arrayFlat[in + 1].getArea()) {
-                    buf = arrayFlat[in];
+                    containerOffice = arrayFlat[in];
                     arrayFlat[in] = arrayFlat[in + 1];
-                    arrayFlat[in + 1] = buf;
+                    arrayFlat[in + 1] = containerOffice;
                 }
             }
         }

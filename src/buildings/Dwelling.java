@@ -78,7 +78,7 @@ public class Dwelling implements Building {
     private LocationSpaceDTO getLocationFlat(int number)
     {
         LocationSpaceDTO location = null;
-        int tempSize=0;
+        int tempSize;
         int count = 0;
         if ((number >= getCountSpace())||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();
@@ -98,45 +98,45 @@ public class Dwelling implements Building {
     //метод получения объекта квартиры по её номеру в доме
     public Space getSpace(int number) { //todo возвращаешь тип Space
 
-        LocationSpaceDTO temp = getLocationFlat(number);
-        if(temp!=null) {
-            return arrayFloors[temp.floorNumber].getSpace(temp.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
+        if(searchLocationSpace!=null) {
+            return arrayFloors[searchLocationSpace.floorNumber].getSpace(searchLocationSpace.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
         }
         else  return null;
     }
     //метод изменения квартиры по её номеру в доме и ссылке на квартиру
     public void setSpace (int number, Space newFlat) {
 
-        LocationSpaceDTO temp = getLocationFlat(number);
-        if(temp!=null) {
-            arrayFloors[temp.floorNumber].setSpace(temp.spaceNumber, newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
+        if(searchLocationSpace!=null) {
+            arrayFloors[searchLocationSpace.floorNumber].setSpace(searchLocationSpace.spaceNumber, newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
         }
     }
     //метод добавления новой квартиры по её номеру в доме и ссылке на квартиру без увеличения числа этажей
     public void addNewSpace(int number, Space newFlat)
     {
-        LocationSpaceDTO temp = getLocationFlat(number);
-        if(temp!=null) {
-            arrayFloors[temp.floorNumber].addNewSpace(temp.spaceNumber, newFlat);//todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
+        if(searchLocationSpace!=null) {
+            arrayFloors[searchLocationSpace.floorNumber].addNewSpace(searchLocationSpace.spaceNumber, newFlat);//todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
         }
-        else getArrayFloors()[size-1].addNewSpace(number- getCountSpace()+getArrayFloors()[size-1].getSize(), newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        else arrayFloors[size-1].addNewSpace(number- getCountSpace()+arrayFloors[size-1].getSize(), newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
     }
     //метод удаления квартиры по её номеру в доме
     public void removeSpace(int number)
     {
-        LocationSpaceDTO temp = getLocationFlat(number);
-        if(temp!=null) {
-            arrayFloors[temp.floorNumber].removeSpace(temp.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
+        if(searchLocationSpace!=null) {
+            arrayFloors[searchLocationSpace.floorNumber].removeSpace(searchLocationSpace.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
         }
     }
     //метод получения самой большой по площади квартиры дома
     public Space getBestSpace(){
         Space flatMaxArea = arrayFloors[0].getBestSpace();
         for(int i=1;i<size;i++) {
-            Space temp = arrayFloors[i].getBestSpace();
-            if(flatMaxArea.getArea() < temp.getArea())
+            Space currentSpace = arrayFloors[i].getBestSpace();
+            if(flatMaxArea.getArea() < currentSpace.getArea())
             {
-                flatMaxArea = temp;
+                flatMaxArea = currentSpace;
             }
         }
         return flatMaxArea;
@@ -145,7 +145,7 @@ public class Dwelling implements Building {
     public Space [] sortByAreaSpace()
     {
         int flatsCount =0; //todo ну почемуб не назвать это flatsCount?
-        Space buf = null;
+        Space containerFlats ;
         Space [] arrayFlat = new Space[getCountSpace()]; //todo Space[], а не Flat[]
         //todo ЗАЧЕМ ты вызываешь getArrayFloors()? Почему к массиву напрямую не обращаешься
         for(int i=0;i<arrayFloors.length;i++) {
@@ -158,9 +158,9 @@ public class Dwelling implements Building {
         for (int out = flatsCount - 1; out >= 1; out--){
             for (int in = 0; in < out; in++){
                 if(arrayFlat[in].getArea() < arrayFlat[in + 1].getArea()) {
-                    buf = arrayFlat[in];
+                    containerFlats = arrayFlat[in];
                     arrayFlat[in] = arrayFlat[in + 1];
-                    arrayFlat[in + 1] = buf;
+                    arrayFlat[in + 1] = containerFlats;
                 }
             }
         }

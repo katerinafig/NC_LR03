@@ -63,7 +63,7 @@ System.out.println();
         System.out.print(ofb.sortByAreaSpace()[i].getArea()+" ");
     }
     System.out.println();
-    System.out.println(ofb.getFloor(2).getBestSpace().getArea());
+    System.out.println(ofb.getBestSpace().getArea());
     ofb.removeSpace(8);
     System.out.println(ofb.getFloor(2).getBestSpace().getArea());
   }
