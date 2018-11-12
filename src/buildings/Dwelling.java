@@ -5,15 +5,14 @@ import buildings.interfaces.Building;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-//todo ненавижу temp. temp -хреновое имя для переменных. Оно не отражает суть. Переименовывай все свои темпы =)))))
 public class Dwelling implements Building {
     private int size;
-    private Floor [] arrayFloors ; //todo НЕЕЕЕЕЕЕТТТТТ =))))) Не DwellingFloor[], а Floor[]!!!!!!!
+    private Floor [] arrayFloors ;
     //Конструктор может принимать количество этажей и массив количества квартир по этажам
     public Dwelling(int size,int [] countsFlat)
     {
         if(size==countsFlat.length) {
-            arrayFloors = new Floor[size]; //todo НЕЕЕЕЕЕЕТТТТТ =))))) Не DwellingFloor[], а Floor[]!!!!!!!
+            arrayFloors = new Floor[size];
             this.size = size;
             for (int i = 0; i < size; i++) {
                 arrayFloors[i] = new DwellingFloor(countsFlat[i]);
@@ -21,7 +20,7 @@ public class Dwelling implements Building {
         }
     }
     //Конструктор может принимать массив этажей дома.
-    public Dwelling (Floor [] arrayFloors) //todo НЕЕЕЕЕЕЕТТТТТ =))))) Не DwellingFloor[], а Floor[]!!!!!!!
+    public Dwelling (Floor [] arrayFloors)
     {
         this.arrayFloors = arrayFloors;
     }
@@ -60,18 +59,18 @@ public class Dwelling implements Building {
     //метод получения объкта этажа по его номеру в доме
     public  Floor getFloor(int number)
     {
-        if ((number >= size)||(number < 0)) {
+        if ((number >= size)||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
             throw new FloorIndexOutOfBoundsException();
         }
-        return arrayFloors[number]; //todo обращайся к полю напрямую
+        return arrayFloors[number];
     }
     //метод изменения этажа по его номеру и ссылке на этаж
     public void setFloor (int number, Floor newFloor)
     {
-        if ((number >= size)||(number < 0)) {
+        if ((number >= size)||(number < 0)) {//todo почему не вынесла в отдельный метод checkBounds?
             throw new FloorIndexOutOfBoundsException();
         }
-            arrayFloors[number]=newFloor; //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+            arrayFloors[number]=newFloor;
 
     }
     //метод получения объекта расположения квартиры в доме по её номеру в доме
@@ -96,11 +95,11 @@ public class Dwelling implements Building {
         return location;
     }
     //метод получения объекта квартиры по её номеру в доме
-    public Space getSpace(int number) { //todo возвращаешь тип Space
+    public Space getSpace(int number) {
 
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            return arrayFloors[searchLocationSpace.floorNumber].getSpace(searchLocationSpace.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+            return arrayFloors[searchLocationSpace.floorNumber].getSpace(searchLocationSpace.spaceNumber);
         }
         else  return null;
     }
@@ -109,7 +108,7 @@ public class Dwelling implements Building {
 
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].setSpace(searchLocationSpace.spaceNumber, newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+            arrayFloors[searchLocationSpace.floorNumber].setSpace(searchLocationSpace.spaceNumber, newFlat);
         }
     }
     //метод добавления новой квартиры по её номеру в доме и ссылке на квартиру без увеличения числа этажей
@@ -117,16 +116,16 @@ public class Dwelling implements Building {
     {
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].addNewSpace(searchLocationSpace.spaceNumber, newFlat);//todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+            arrayFloors[searchLocationSpace.floorNumber].addNewSpace(searchLocationSpace.spaceNumber, newFlat);
         }
-        else arrayFloors[size-1].addNewSpace(number- getCountSpace()+arrayFloors[size-1].getSize(), newFlat); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+        else arrayFloors[size-1].addNewSpace(number- getCountSpace()+arrayFloors[size-1].getSize(), newFlat);
     }
     //метод удаления квартиры по её номеру в доме
     public void removeSpace(int number)
     {
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].removeSpace(searchLocationSpace.spaceNumber); //todo зачем getArrayFloors() когда можешь напрямую к массиву обращаться?
+            arrayFloors[searchLocationSpace.floorNumber].removeSpace(searchLocationSpace.spaceNumber);
         }
     }
     //метод получения самой большой по площади квартиры дома
@@ -142,16 +141,14 @@ public class Dwelling implements Building {
         return flatMaxArea;
     }
     //Метод получения отсортированного по убыванию площадей массива квартир
-    public Space [] sortByAreaSpace()
-    {
-        int flatsCount =0; //todo ну почемуб не назвать это flatsCount?
-        Space containerFlats ;
-        Space [] arrayFlat = new Space[getCountSpace()]; //todo Space[], а не Flat[]
-        //todo ЗАЧЕМ ты вызываешь getArrayFloors()? Почему к массиву напрямую не обращаешься
+    public Space [] sortByAreaSpace() {
+        int flatsCount =0;
+        Space containerFlats;
+        Space [] arrayFlat = new Space[getCountSpace()];
         for(int i=0;i<arrayFloors.length;i++) {
             for(int j=0; j<arrayFloors[i].getSize();j++) {
                 if(arrayFloors[i].getSpace(j)!=null)
-                arrayFlat[flatsCount] = arrayFloors[i].getSpace(j); //todo каст делаешь ибо нужно хранить массив типа Space, а ты хранишь Flat. Храни Space, тогда и каст делать не надо
+                arrayFlat[flatsCount] = arrayFloors[i].getSpace(j);
                 flatsCount++;
             }
         }

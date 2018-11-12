@@ -5,7 +5,7 @@ import buildings.interfaces.Space;
 
 public class DwellingFloor implements Floor {
     private int size;
-    private Space [] arrayFlat; //todo в 3-й лабе ты работаешь с переменными типа Space. ПОтому и массив тоже будет типа Space
+    private Space [] arrayFlat;
     //Конструктор может принимать количество квартир на этаже.
     public DwellingFloor(int countFlats) {
         arrayFlat = new Space[countFlats];
@@ -40,12 +40,12 @@ public class DwellingFloor implements Floor {
     }
     //метод получения массива квартир этажа
     public Space[] getArraySpace() {
-        Space [] newArrayFlat = new Space[arrayFlat.length]; //todo Space, а не Flat
+        Space [] newArrayFlat = new Space[arrayFlat.length];
         System.arraycopy(arrayFlat, 0, newArrayFlat, 0, arrayFlat.length);
         return  newArrayFlat;
     }
     //метод проверки находения номера в границах массива этажа
-    void checkBounds(int number)
+    void checkBounds(int number) //todo private, а не package private
     {
         if ((number > size)||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();
@@ -60,8 +60,8 @@ public class DwellingFloor implements Floor {
     //метод изменения квартиры
     public void setSpace (int number, Space newFlat)
     {
-        checkBounds(number);//todo ты эту проверку 4 выполняешь абсолютно идентично в 4-х методах!!!! - выноси проверку в отдельный метод void checkBounds() и вызывай его
-        arrayFlat[number]=newFlat; //todo каст делаешь ибо нужно хранить массив типа Space, а ты хранишь Flat. Храни Space, тогда и каст делать не надо
+        checkBounds(number);
+        arrayFlat[number]=newFlat;
 
     }
     //метод добавления новой квартиры на этаже по будущему номеру квартиры
@@ -69,7 +69,7 @@ public class DwellingFloor implements Floor {
     {
         checkBounds(number);
         if(size==arrayFlat.length) {
-            if (number >= size) { //todo ==, а не >=. И это условие надо проверять не перед расширением массива, а после
+            if (number >= size) {
                 Flat[] newArrayFlat = new Flat[2 * arrayFlat.length];
                 System.arraycopy(arrayFlat, 0, newArrayFlat, 0, arrayFlat.length);
                 arrayFlat = newArrayFlat;
@@ -79,7 +79,7 @@ public class DwellingFloor implements Floor {
             System.arraycopy(arrayFlat, number, arrayFlat, number+1, arrayFlat.length-number-1);
 
         }
-        arrayFlat[number]= newFlat;  //todo каст делаешь ибо нужно хранить массив типа Space, а ты хранишь Flat. Храни Space, тогда и каст делать не надо
+        arrayFlat[number]= newFlat;
         size++;
 
     }
@@ -87,17 +87,14 @@ public class DwellingFloor implements Floor {
     public void removeSpace(int number)
     {
         checkBounds(number);
-        //todo на null уже не надо проверять
         System.arraycopy(arrayFlat, number+1, arrayFlat, number, size-number-1);
         size--;
     }
     //метод получения самой большой по площади квартиры этажа
-    public Space getBestSpace(){ //todo надо возвращать не Flat, а Space
+    public Space getBestSpace(){
         Space flatMaxArea = arrayFlat[0];
         for(int i=1; i<size;i++)
         {
-            //todo на null уже не надо проверять
-            //todo Зачем? .... Зачем ты вызываешь метод getArraySpace()???? ПОчему не обращаешься к массиву напрямую ???
             if(arrayFlat[i].getArea()>flatMaxArea.getArea()){
                 flatMaxArea = arrayFlat[i];
             }
