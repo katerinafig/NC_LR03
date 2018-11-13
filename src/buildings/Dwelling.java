@@ -56,21 +56,25 @@ public class Dwelling implements Building {
     public Floor[] getArrayFloors() {
         return arrayFloors;
     }
+    //метод проверки находения номера в границах массива этажа
+    private void checkBounds(int number)
+    {
+        if ((number >= size)||(number < 0)) {
+            throw new FloorIndexOutOfBoundsException();
+        }
+    }
     //метод получения объкта этажа по его номеру в доме
     public  Floor getFloor(int number)
     {
-        if ((number >= size)||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new FloorIndexOutOfBoundsException();
-        }
+        //todo почему не вынесла в отдельный метод checkBounds?
+        checkBounds(number);
         return arrayFloors[number];
     }
     //метод изменения этажа по его номеру и ссылке на этаж
     public void setFloor (int number, Floor newFloor)
     {
-        if ((number >= size)||(number < 0)) {//todo почему не вынесла в отдельный метод checkBounds?
-            throw new FloorIndexOutOfBoundsException();
-        }
-            arrayFloors[number]=newFloor;
+        checkBounds(number);//todo почему не вынесла в отдельный метод checkBounds?
+        arrayFloors[number]=newFloor;
 
     }
     //метод получения объекта расположения квартиры в доме по её номеру в доме

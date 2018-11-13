@@ -45,7 +45,7 @@ public class DwellingFloor implements Floor {
         return  newArrayFlat;
     }
     //метод проверки находения номера в границах массива этажа
-    void checkBounds(int number) //todo private, а не package private
+    private void checkBounds(int number)
     {
         if ((number > size)||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();

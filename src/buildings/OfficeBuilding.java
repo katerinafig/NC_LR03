@@ -26,29 +26,29 @@ public class OfficeBuilding implements Building {
     }
     //приватный метод добавления узла в список по номеру
     private void addNode(int number, Node node){
-        Node searchNode; //todo previousNode
+        Node previousNode; //todo previousNode
         if(number==0){
-            searchNode = head;
+            previousNode = head;
         }
         else {
-            searchNode = getNode(number - 1);
+            previousNode = getNode(number - 1);
         }
-        searchNode.next.past=node;
-        node.next=searchNode.next;
-        node.past =searchNode;
-        searchNode.next=node;
+        previousNode.next.past=node;
+        node.next=previousNode.next;
+        node.past =previousNode;
+        previousNode.next=node;
     }
     //приватный метод удаления узла из списка по его номеру
     private void removeNode(int number){
-        Node searchNode; //todo previousNode
+        Node previousNode; //todo previousNode
         if(number==0){
-            searchNode = head;
+            previousNode = head;
         }
         else {
-            searchNode = getNode(number - 1);
+            previousNode = getNode(number - 1);
         }
-        searchNode.next=searchNode.next.next;
-        searchNode.next.past=searchNode;
+        previousNode.next=previousNode.next.next;
+        previousNode.next.past=previousNode;
     }
     private OfficeBuilding() {
         head = new Node();
@@ -144,28 +144,31 @@ public class OfficeBuilding implements Building {
         while (currentNode!=head);
         return arrayOffice;
     }
+    //метод проверки находения номера в границах массива этажа
+    private void checkBounds(int number)
+    {
+        if ((number >= getSize())||(number < 0)) {
+            throw new FloorIndexOutOfBoundsException();
+        }
+    }
     //метод получения объкта этажа по его номеру в офффисном здании
     public  Floor getFloor(int number)
     {
-        if ((number >= getSize())||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new FloorIndexOutOfBoundsException();
-        }
-        return getNode(number).valueOfficeFloor;
+        checkBounds(number); //todo почему не вынесла в отдельный метод checkBounds?
+         return getNode(number).valueOfficeFloor;
     }
     //метод изменения этажа по его номеру в здании и ссылке на обновленный этаж.
     public void setFloor (int number, Floor newFloor)
     {
-        if ((number >= getSize())||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new FloorIndexOutOfBoundsException();
-        }
-            getNode(number).valueOfficeFloor=newFloor;
+        checkBounds(number); //todo почему не вынесла в отдельный метод checkBounds?
+        getNode(number).valueOfficeFloor=newFloor;
 
     }
-    private LocationSpaceDTO getLocationSpace(int number)
+    private LocationSpaceDTO getLocationOffice(int number)
     {
         LocationSpaceDTO location = null;
-        int sizeFloor=0; //todo имя гавно
-        int sumSizeFloors = 0; //todo имя гавно
+        int sizeCurrentsFloor; //todo имя гавно
+        int sumSizePassedFloors = 0; //todo имя гавно
         if ((number >= getCountSpace())||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();
         }
@@ -173,12 +176,12 @@ public class OfficeBuilding implements Building {
         int i=0;
         do
         {
-            sizeFloor = currentNode.valueOfficeFloor.getSize();
-            if(number-sumSizeFloors>=sizeFloor){
-                sumSizeFloors += sizeFloor;
+            sizeCurrentsFloor = currentNode.valueOfficeFloor.getSize();
+            if(number-sumSizePassedFloors>=sizeCurrentsFloor){
+                sumSizePassedFloors += sizeCurrentsFloor;
             }
             else{
-                location=new LocationSpaceDTO(i,number-sumSizeFloors);
+                location=new LocationSpaceDTO(i,number-sumSizePassedFloors);
                 break;
             }
             currentNode = currentNode.next;
@@ -190,7 +193,7 @@ public class OfficeBuilding implements Building {
     //метод получения объекта офиса по его номеру в офисном здании
     public Space getSpace(int number) {
 
-        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo spaceLocation?
+        LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo spaceLocation?
         if(searchLocationSpace!=null) {
             return getFloor(searchLocationSpace.floorNumber).getSpace(searchLocationSpace.spaceNumber);
         }
@@ -199,7 +202,7 @@ public class OfficeBuilding implements Building {
     //метод изменения объекта офиса по его номеру в доме и ссылке типа офиса
     public void setSpace(int number, Space newOffice) {
 
-        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo
+        LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
             getFloor(searchLocationSpace.floorNumber).setSpace(searchLocationSpace.spaceNumber, newOffice);
         }
@@ -207,7 +210,7 @@ public class OfficeBuilding implements Building {
     //метод добавления офиса в здание по номеру офиса в здании и ссылке на офис
     public void addNewSpace(int number, Space newFlat)
     {
-        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo
+        LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
             getFloor(searchLocationSpace.floorNumber).addNewSpace(searchLocationSpace.spaceNumber, newFlat);
         }
@@ -216,7 +219,7 @@ public class OfficeBuilding implements Building {
     //метод удаления офиса по его номеру в здании.
     public void removeSpace(int number)
     {
-        LocationSpaceDTO searchLocationSpace = getLocationSpace(number); //todo
+        LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
             getFloor(searchLocationSpace.floorNumber).removeSpace(searchLocationSpace.spaceNumber);
         }
@@ -242,24 +245,26 @@ public class OfficeBuilding implements Building {
     public Space [] sortByAreaSpace()
     {
         int officeCount=0;
-        Space containerOffice; //todo имя гавно
+        Floor temporaryFloor;
+        Space temporaryOffice; //todo имя гавно
         Space [] arrayFlat = new Space[getCountSpace()];
         for(int i=0;i<getSize();i++) {
             /* todo в каждой итерации аж 3!!!!!! раза вызываешь getFloor(i) заставляя проходиться по нодам от head до i-го года.
                Блин на для массивов так норм, ибо внутри простая арифметика, для нодовых структур - нифига подобного.
                Записывай в переменную емае */
-            for(int j = 0; j< getFloor(i).getSize(); j++) {
-                if(getFloor(i).getSpace(j)!=null)
-                    arrayFlat[officeCount] = getFloor(i).getSpace(j);
+            temporaryFloor = getFloor(i);
+            for(int j = 0; j< temporaryFloor.getSize(); j++) {
+                if(temporaryFloor.getSpace(j)!=null)
+                    arrayFlat[officeCount] = temporaryFloor.getSpace(j);
                 officeCount++;
             }
         }
         for (int out = officeCount - 1; out >= 1; out--){
             for (int in = 0; in < out; in++){
                 if(arrayFlat[in].getArea() < arrayFlat[in + 1].getArea()) {
-                    containerOffice = arrayFlat[in];
+                    temporaryOffice = arrayFlat[in];
                     arrayFlat[in] = arrayFlat[in + 1];
-                    arrayFlat[in + 1] = containerOffice;
+                    arrayFlat[in + 1] = temporaryOffice;
                 }
             }
         }

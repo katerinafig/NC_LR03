@@ -22,28 +22,28 @@ public class OfficeFloor implements Floor {
     }
     //приватный метод добавления узла в список по номеру
     private void addNode(int number, Node node){
-        Node searchNode; //todo имя гавно. Ты определяешь предыдущий для нужного нода нод, так и называй его previousNode
+        Node previousNode; //todo имя гавно. Ты определяешь предыдущий для нужного нода нод, так и называй его previousNode
         if(number==0)
         {
-            searchNode = head;
+            previousNode = head;
         }
         else{
-            searchNode=getNode(number-1);
+            previousNode=getNode(number-1);
         }
-        node.next=searchNode.next;
-        searchNode.next=node;
+        node.next=previousNode.next;
+        previousNode.next=node;
     }
     //приватный метод удаления узла из списка по его номеру
     private void removeNode(int number){
-        Node searchNode; //todo имя гавно. Ты определяешь предыдущий для нужного нода нод, так и называй его previousNode
+        Node previousNode; //todo имя гавно. Ты определяешь предыдущий для нужного нода нод, так и называй его previousNode
          if(number==0)
          {
-            searchNode = head;
+            previousNode = head;
          }
          else{
-            searchNode=getNode(number-1);
+            previousNode=getNode(number-1);
          }
-        searchNode.next=searchNode.next.next;
+        previousNode.next=previousNode.next.next;
     }
     //Конструктор может принимать количество офисов на этаже
     public OfficeFloor(int countOffice){
@@ -85,14 +85,14 @@ public class OfficeFloor implements Floor {
     }
     //метод получения общего количества комнат этажа
     public int getCountRoomsOnSpace(){
-        Node temp = head; //todo имя гавно
+        Node currentNode = head; //todo имя гавно
         int  countOfRooms = 0;
         do
         {
-            countOfRooms+=temp.valueOffice.getNumberOfRooms();
-            temp = temp.next;
+            countOfRooms+=currentNode.valueOffice.getNumberOfRooms();
+            currentNode = currentNode.next;
         }
-        while (temp!=head);
+        while (currentNode!=head);
         return countOfRooms;
     }
     //метод получения массива офисов этажа
@@ -114,19 +114,22 @@ public class OfficeFloor implements Floor {
     {
         return getNode(number).valueOffice;
     }
+    //метод проверки находения номера в границах массива помещений
+    private void checkBounds(int number)
+    {
+        if ((number > size)||(number < 0)) {
+            throw new SpaceIndexOutOfBoundsException();
+        }
+    }
     //метод изменения офиса по его номеру на этаже и ссылке на обновленный офис
     public void setSpace(int number, Space newOffice)
     {
-        if ((number > size)||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new SpaceIndexOutOfBoundsException();
-        }
+        checkBounds(number); //todo почему не вынесла в отдельный метод checkBounds?
         getNode(number).valueOffice=newOffice;
     }
     //метод добавления нового офиса на этаже по будущему номеру офиса
     public void addNewSpace(int number, Space newOffice) {
-        if ((number > size)||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new SpaceIndexOutOfBoundsException();
-        }
+         checkBounds(number); //todo почему не вынесла в отдельный метод checkBounds?
          Node newNode = new Node();
          newNode.valueOffice =  newOffice;
          addNode(number, newNode);
@@ -135,9 +138,7 @@ public class OfficeFloor implements Floor {
     }
     //метод удаления офиса по его номеру на этаже
     public void removeSpace(int number){
-        if ((number > size)||(number < 0)) { //todo почему не вынесла в отдельный метод checkBounds?
-            throw new SpaceIndexOutOfBoundsException();
-        }
+        checkBounds(number); //todo почему не вынесла в отдельный метод checkBounds?
         removeNode(number);
         size--;
 
