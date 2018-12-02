@@ -3,7 +3,7 @@ import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class DwellingFloor implements Floor {
+public class DwellingFloor implements Floor,Cloneable {
     private int size;
     private Space [] arrayFlat;
     //Конструктор может принимать количество квартир на этаже.
@@ -100,6 +100,52 @@ public class DwellingFloor implements Floor {
             }
         }
         return  flatMaxArea;
+    }
+    public Object clone() throws CloneNotSupportedException{
+        DwellingFloor result = (DwellingFloor)super.clone();
+        result.arrayFlat=arrayFlat.clone();
+        for(int i = 0; i < size; i++) {
+            result.arrayFlat[i]=(Space)arrayFlat[i].clone();
+        }
+        return result;
+    }
+    @Override
+    public String toString(){
+        StringBuilder finalString = new StringBuilder();
+        finalString.append("DwellingFloor (").append(size).append(", ");
+        for (int i=0;i<size;i++) {
+            finalString.append(arrayFlat[i].toString()).append(", ");
+        }
+        finalString.delete(finalString.length()-2,finalString.length()).append(")");
+        return finalString.toString();
+    }
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj==this) {
+            return true;
+        }
+        if (!(obj instanceof DwellingFloor)) {
+            return  false;
+        }
+        DwellingFloor guest = (DwellingFloor) obj;
+        if(guest.size!=size)return false;
+        for (int i = 0; i < size; i++) {
+            if (!guest.arrayFlat[i].equals(arrayFlat[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    @Override
+    public int hashCode() {
+        int hashcode=size;
+        for(int i=0;i<size;i++)
+        {
+            hashcode^=arrayFlat[i].hashCode();
+        }
+        return hashcode;
     }
 
 }

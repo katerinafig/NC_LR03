@@ -5,7 +5,7 @@ import buildings.interfaces.Building;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class Dwelling implements Building {
+public class Dwelling implements Building, Cloneable {
     private int size;
     private Floor [] arrayFloors ;
     //Конструктор может принимать количество этажей и массив количества квартир по этажам
@@ -167,5 +167,47 @@ public class Dwelling implements Building {
         }
         return arrayFlat;
     }
-
+    public Object clone() throws CloneNotSupportedException{//todo аналогично dwellingfloor
+        Dwelling result = (Dwelling) super.clone();
+        result.arrayFloors=arrayFloors.clone();
+        for(int i = 0; i < size; i++) {
+            result.setFloor(i, (Floor) arrayFloors[i].clone());
+        }
+        return result;
+    }
+    @Override
+    public String toString(){
+        StringBuilder finalString = new StringBuilder();
+        finalString.append("Dwelling (").append(size).append(", ");
+        for (int i=0;i<size;i++) {
+            finalString.append(arrayFloors[i].toString()).append(", ");
+        }
+        return finalString.delete(finalString.length()-2,finalString.length()).append(")").toString();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==this) {
+            return true;
+        }
+        if (!(obj instanceof Dwelling)) {
+            return false;
+        }
+        Dwelling guest = (Dwelling) obj;
+        if(guest.size!=size)return false;
+        for (int i = 0; i < size; i++) {
+            if (!guest.arrayFloors[i].equals(arrayFloors[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public int hashCode() {
+        int hashcode=size;
+        for(int i=0;i<size;i++)
+        {
+            hashcode^=arrayFloors[i].hashCode();
+        }
+        return hashcode;
+    }
 }

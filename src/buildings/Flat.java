@@ -3,7 +3,9 @@ import buildings.exception.InvalidRoomsCountException;
 import buildings.exception.InvalidSpaceAreaException;
 import buildings.interfaces.Space;
 
-public class Flat  implements Space {
+import java.util.Objects;
+
+public class Flat  implements Space, Cloneable{
     private static final int  DEF_ROOMS = 2;
     private static final int  DEF_AREA = 50;
 
@@ -36,5 +38,28 @@ public class Flat  implements Space {
         if(numberOfRooms<=0) throw new InvalidRoomsCountException();
         this.numberOfRooms = numberOfRooms;
     }
+    public Object clone() throws CloneNotSupportedException{
 
+        return super.clone();
+    }
+    @Override
+    public String toString(){
+        return String.format("Flat (%d, %d.0)",numberOfRooms,area);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==this) {
+            return true;
+        }
+        if (!(obj instanceof Flat)) {
+            return false;
+        }
+        final Flat guest = (Flat) obj;
+        return (this.area==guest.area)&&(this.numberOfRooms==guest.numberOfRooms);
+    }
+    @Override
+    public int hashCode() {
+        return area^numberOfRooms;
+    }
 }
+

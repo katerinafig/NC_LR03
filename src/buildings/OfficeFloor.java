@@ -3,12 +3,25 @@ import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class OfficeFloor implements Floor {
-    class Node {
+public class OfficeFloor implements Floor,Cloneable {
+    class Node implements Cloneable {
         Node next;    // указатель на следующий элемент
         Space valueOffice;
+        public Node(){
+        }
+        public Object clone() throws CloneNotSupportedException {
+            Node nodeClone = (Node) super.clone();
+            Node currentNodeClone = nodeClone;
+            Node currentNode = head;
+            currentNodeClone.valueOffice = (Office) this.valueOffice.clone();
+            do {
+                currentNodeClone.next.valueOffice = (Office)currentNode.next.valueOffice.clone();
+                currentNodeClone = currentNodeClone.next;
+                currentNode = currentNode.next;
+            }while (currentNode!=head);
+            return nodeClone;
+        }
     }
-
     private int  size;
     private Node head;
     //приватный метод получения узла по его номеру
@@ -157,4 +170,58 @@ public class OfficeFloor implements Floor {
         while (currentNode!=head);
         return  officeMaxArea;
     }
+    public Object clone() throws CloneNotSupportedException{
+        OfficeFloor clone = (OfficeFloor) super.clone();
+        clone.size = this.size;
+        clone.head = (Node)this.head.clone();
+        return  clone;
+    }
+    @Override
+    public String toString(){
+        StringBuilder finalString = new StringBuilder();
+        finalString.append("OfficeFloor (").append(size).append(", ");
+        Node currentNode = head;
+        do
+        {
+            finalString.append(currentNode.valueOffice.toString()).append(", ");
+            currentNode = currentNode.next;
+        }
+        while (currentNode!=head);
+        return finalString.delete(finalString.length()-2,finalString.length()).append(")").toString();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==this) {
+            return true;
+        }
+        if (!(obj instanceof OfficeFloor)) {
+            return false;
+        }
+        OfficeFloor guest = (OfficeFloor) obj;
+        if(guest.size!=size)return false;
+        Node currentNode = head;
+        Node currentNodeGuest = guest.head;
+        do {
+            if(!currentNodeGuest.valueOffice.equals(currentNode.valueOffice)){
+                return false;
+            }
+            currentNode = currentNode.next;
+            currentNodeGuest=currentNodeGuest.next;
+        }
+        while (currentNode!=head);
+        return true;
+    }
+    @Override
+    public int hashCode() {
+        int hashcode=size;
+        Node currentNode = head;
+        do
+        {
+            hashcode^=currentNode.valueOffice.hashCode();
+            currentNode = currentNode.next;
+        }
+        while (currentNode!=head);
+        return hashcode;
+    }
+
 }

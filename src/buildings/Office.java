@@ -1,7 +1,7 @@
 package buildings;
 import buildings.interfaces.Space;
 import buildings.exception.*;
-public class Office implements Space {
+public class Office implements Space,Cloneable {
     private static final int  DEF_ROOMS = 1;
     private static final int  DEF_AREA = 250;
 
@@ -33,5 +33,27 @@ public class Office implements Space {
     public void setNumberOfRooms(int numberOfRooms) {
         if(numberOfRooms<=0) throw new InvalidRoomsCountException();
         this.numberOfRooms = numberOfRooms;
+    }
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
+    }
+    @Override
+    public String toString(){
+        return String.format("Office (%d, %d.0)",numberOfRooms,area);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==this) {
+            return true;
+        }
+        if (!(obj instanceof Office)) {
+            return false;
+        }
+        final Office guest = (Office) obj;
+        return (this.area==guest.area)&&(this.numberOfRooms==guest.numberOfRooms);
+    }
+    @Override
+    public int hashCode() {
+        return area^numberOfRooms;
     }
 }
