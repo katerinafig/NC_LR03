@@ -162,7 +162,7 @@ public class OfficeBuilding implements Building, Cloneable {
         return arrayOffice;
     }
     //метод проверки находения номера в границах массива этажа
-    private void checkBounds(int number)
+    public void checkBounds(int number)
     {
         if ((number >= getSize())||(number < 0)) {
             throw new FloorIndexOutOfBoundsException();

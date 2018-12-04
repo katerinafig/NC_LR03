@@ -45,7 +45,7 @@ public class DwellingFloor implements Floor,Cloneable {
         return  newArrayFlat;
     }
     //метод проверки находения номера в границах массива этажа
-    private void checkBounds(int number)
+    public void checkBounds(int number)
     {
         if ((number > size)||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();

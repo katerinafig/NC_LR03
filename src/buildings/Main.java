@@ -35,7 +35,6 @@ public class Main {
               System.out.print(of.getSpace(i).getArea() + " " + of.getSpace(i).getNumberOfRooms() + ";");
           }
           System.out.println();
-          of.addNewSpace(3, new Office(300, 2));
           for (int i = 0; i < of.getSize(); i++) {
               System.out.print(of.getSpace(i).getArea() + " " + of.getSpace(i).getNumberOfRooms() + ";");
           }
@@ -45,17 +44,13 @@ public class Main {
           System.out.println(of.getCountRoomsOnSpace());
           OfficeBuilding ofb = new OfficeBuilding(new OfficeFloor[]{of, of2, of3});
           System.out.println(ofb.getBestSpace().getArea());
-          ofb.removeSpace(8);
+          ofb.removeSpace(7);
           System.out.println(ofb.getFloor(2).getBestSpace().getArea());
           System.out.println(ofb.toString());
-          OfficeBuilding clone2 = (OfficeBuilding) ofb.clone();
-          of.setSpace(3, new Office(666,1));
-          for(int k=0;k<clone2.getSize();k++) {
-              for (int i = 0; i < clone2.getFloor(k).getSize(); i++) {
-                  System.out.print(clone2.getFloor(k).getSpace(i).toString());
-              }
-              System.out.println();
-          }
+          OfficeFloor ofnew = new OfficeFloor(new Office[]{new Office(666, 3), new Office(478, 8)});
+
+          PlacementExchanger pe = new PlacementExchanger();
+          System.out.println( pe.isFloorExchange( dwelling.getArrayFloors()[0],ofnew));
 
       }
       catch(CloneNotSupportedException ex){

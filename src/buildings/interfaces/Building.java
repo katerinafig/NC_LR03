@@ -27,5 +27,6 @@ public interface Building {
     public Space getBestSpace();
     //метод получения отсортированного массива всех помещений
     public Space [] sortByAreaSpace();
+    public void checkBounds(int number);
     Object clone()throws CloneNotSupportedException;
 }

@@ -128,7 +128,7 @@ public class OfficeFloor implements Floor,Cloneable {
         return getNode(number).valueOffice;
     }
     //метод проверки находения номера в границах массива помещений
-    private void checkBounds(int number)
+    public void checkBounds(int number)
     {
         if ((number > size)||(number < 0)) {
             throw new SpaceIndexOutOfBoundsException();

@@ -19,5 +19,6 @@ public interface Floor {
     public void removeSpace(int number);
     //метод получения лучшего помещения на этаже
     public Space getBestSpace();
+    public void checkBounds(int number);
     Object clone()throws CloneNotSupportedException;
 }
