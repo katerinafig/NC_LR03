@@ -3,22 +3,17 @@ import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class OfficeFloor implements Floor,Cloneable {
-    class Node implements Cloneable {
+import java.io.Serializable;
+
+public class OfficeFloor implements Floor,Cloneable, Serializable {
+    class Node implements Cloneable,Serializable {
         Node next;    // указатель на следующий элемент
         Space valueOffice;
         public Node(){
         }
         public Object clone() throws CloneNotSupportedException {
             Node nodeClone = (Node) super.clone();
-            Node currentNodeClone = nodeClone;
-            Node currentNode = head;
-            currentNodeClone.valueOffice = (Office) this.valueOffice.clone();
-            do {
-                currentNodeClone.next.valueOffice = (Office)currentNode.next.valueOffice.clone();
-                currentNodeClone = currentNodeClone.next;
-                currentNode = currentNode.next;
-            }while (currentNode!=head);
+            nodeClone.valueOffice = (Space) valueOffice.clone();
             return nodeClone;
         }
     }
@@ -172,8 +167,16 @@ public class OfficeFloor implements Floor,Cloneable {
     }
     public Object clone() throws CloneNotSupportedException{
         OfficeFloor clone = (OfficeFloor) super.clone();
-        clone.size = this.size;
-        clone.head = (Node)this.head.clone();
+        clone.head = (Node)head.clone();
+        Node currentNode = head;
+        Node currentCloneNode = clone.head;
+        do {
+            currentCloneNode.next = (Node) currentNode.next.clone();
+            currentCloneNode = currentCloneNode.next;
+            currentNode = currentNode.next;
+        }
+        while (currentNode.next!=head);
+        currentCloneNode.next = clone.head;
         return  clone;
     }
     @Override

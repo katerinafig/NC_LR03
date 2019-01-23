@@ -1,4 +1,4 @@
 package buildings.exception;
 
-public class InexchangeableSpacesException extends IndexOutOfBoundsException{
+public class InexchangeableSpacesException extends RuntimeException {
 }

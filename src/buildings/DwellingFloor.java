@@ -3,7 +3,9 @@ import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class DwellingFloor implements Floor,Cloneable {
+import java.io.Serializable;
+
+public class DwellingFloor implements Floor,Cloneable, Serializable {
     private int size;
     private Space [] arrayFlat;
     //Конструктор может принимать количество квартир на этаже.

@@ -6,11 +6,10 @@ import buildings.interfaces.Building;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class OfficeBuilding implements Building, Cloneable {
+import java.io.Serializable;
 
-
-
-    private class Node implements Cloneable{
+public class OfficeBuilding implements Building, Cloneable, Serializable {
+    private class Node implements Cloneable,Serializable{
         Node next;
         Node past;
         Floor valueOfficeFloor;
@@ -19,14 +18,7 @@ public class OfficeBuilding implements Building, Cloneable {
         }
         public Object clone() throws CloneNotSupportedException {
             Node nodeClone = (Node) super.clone();
-            Node currentNodeClone = nodeClone;
-            Node currentNode = head;
-            currentNodeClone.valueOfficeFloor = (OfficeFloor) this.valueOfficeFloor.clone();
-            do {
-                currentNodeClone.next.valueOfficeFloor = (OfficeFloor)currentNode.next.valueOfficeFloor.clone();
-                currentNodeClone = currentNodeClone.next;
-                currentNode = currentNode.next;
-            }while (currentNode!=head);
+            nodeClone.valueOfficeFloor = (OfficeFloor) this.valueOfficeFloor.clone();
             return nodeClone;
         }
     }
@@ -289,8 +281,17 @@ public class OfficeBuilding implements Building, Cloneable {
     }
     public Object clone() throws CloneNotSupportedException{
         OfficeBuilding clone = (OfficeBuilding) super.clone();
-        clone.size = this.size;
-        clone.head = (Node)this.head.clone();
+        clone.head = (Node)head.clone();
+        Node currentNode = head;
+        Node currentCloneNode = clone.head;
+        do {
+            currentCloneNode.next = (Node) currentNode.next.clone();
+            currentCloneNode = currentCloneNode.next;
+            currentNode = currentNode.next;
+        }
+        while (currentNode.next!=head);
+        clone.head.past = currentCloneNode;
+        currentCloneNode.next=clone.head;
         return  clone;
     }
     @Override

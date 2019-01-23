@@ -5,7 +5,9 @@ import buildings.interfaces.Building;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-public class Dwelling implements Building, Cloneable {
+import java.io.Serializable;
+
+public class Dwelling implements Building, Cloneable, Serializable {
     private int size;
     private Floor [] arrayFloors ;
     //Конструктор может принимать количество этажей и массив количества квартир по этажам
@@ -23,6 +25,7 @@ public class Dwelling implements Building, Cloneable {
     public Dwelling (Floor [] arrayFloors)
     {
         this.arrayFloors = arrayFloors;
+        this.size = arrayFloors.length;
     }
     //метод получения общего количества этажей дома
     public int getSize() {

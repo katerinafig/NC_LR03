@@ -1,4 +1,4 @@
 package buildings.exception;
 
-public class InexchangeableFloorsException extends IndexOutOfBoundsException{
+public class InexchangeableFloorsException extends RuntimeException {
 }

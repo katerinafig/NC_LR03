@@ -1,7 +1,10 @@
 package buildings;
 import buildings.interfaces.Space;
 import buildings.exception.*;
-public class Office implements Space,Cloneable {
+
+import java.io.Serializable;
+
+public class Office implements Space,Cloneable, Serializable {
     private static final int  DEF_ROOMS = 1;
     private static final int  DEF_AREA = 250;
 

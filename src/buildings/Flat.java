@@ -3,9 +3,10 @@ import buildings.exception.InvalidRoomsCountException;
 import buildings.exception.InvalidSpaceAreaException;
 import buildings.interfaces.Space;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Flat  implements Space, Cloneable{
+public class Flat  implements Space, Cloneable, Serializable {
     private static final int  DEF_ROOMS = 2;
     private static final int  DEF_AREA = 50;
 
