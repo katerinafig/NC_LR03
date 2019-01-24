@@ -8,19 +8,19 @@ public class LocationSpaceDTO {
         this.spaceNumber = spaceNumber;
     }
 
-    public int getFloor() {
+    public int getFloorNumber() {
         return floorNumber;
     }
 
-    public void setFloor(int floorNumber) {
+    public void setFloorNumber(int floorNumber) {
         this.floorNumber = floorNumber;
     }
 
-    public int getOffice() {
+    public int getSpaceNumber() {
         return spaceNumber;
     }
 
-    public void setOffice(int spaceNumber) {
+    public void setSpaceNumber(int spaceNumber) {
         this.spaceNumber = spaceNumber;
     }
 }

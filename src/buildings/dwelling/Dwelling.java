@@ -1,4 +1,5 @@
-package buildings;
+package buildings.dwelling;
+import buildings.LocationSpaceDTO;
 import buildings.exception.FloorIndexOutOfBoundsException;
 import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Building;
@@ -106,7 +107,7 @@ public class Dwelling implements Building, Cloneable, Serializable {
 
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            return arrayFloors[searchLocationSpace.floorNumber].getSpace(searchLocationSpace.spaceNumber);
+            return arrayFloors[searchLocationSpace.getFloorNumber()].getSpace(searchLocationSpace.getSpaceNumber());
         }
         else  return null;
     }
@@ -115,7 +116,7 @@ public class Dwelling implements Building, Cloneable, Serializable {
 
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].setSpace(searchLocationSpace.spaceNumber, newFlat);
+            arrayFloors[searchLocationSpace.getFloorNumber()].setSpace(searchLocationSpace.getSpaceNumber(), newFlat);
         }
     }
     //метод добавления новой квартиры по её номеру в доме и ссылке на квартиру без увеличения числа этажей
@@ -123,7 +124,7 @@ public class Dwelling implements Building, Cloneable, Serializable {
     {
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].addNewSpace(searchLocationSpace.spaceNumber, newFlat);
+            arrayFloors[searchLocationSpace.getFloorNumber()].addNewSpace(searchLocationSpace.getSpaceNumber(), newFlat);
         }
         else arrayFloors[size-1].addNewSpace(number- getCountSpace()+arrayFloors[size-1].getSize(), newFlat);
     }
@@ -132,7 +133,7 @@ public class Dwelling implements Building, Cloneable, Serializable {
     {
         LocationSpaceDTO searchLocationSpace = getLocationFlat(number);
         if(searchLocationSpace!=null) {
-            arrayFloors[searchLocationSpace.floorNumber].removeSpace(searchLocationSpace.spaceNumber);
+            arrayFloors[searchLocationSpace.getFloorNumber()].removeSpace(searchLocationSpace.getSpaceNumber());
         }
     }
     //метод получения самой большой по площади квартиры дома

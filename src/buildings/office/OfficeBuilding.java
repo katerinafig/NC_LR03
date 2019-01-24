@@ -1,5 +1,6 @@
-package buildings;
+package buildings.office;
 
+import buildings.LocationSpaceDTO;
 import buildings.exception.FloorIndexOutOfBoundsException;
 import buildings.exception.SpaceIndexOutOfBoundsException;
 import buildings.interfaces.Building;
@@ -204,7 +205,7 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
 
         LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo spaceLocation?
         if(searchLocationSpace!=null) {
-            return getFloor(searchLocationSpace.floorNumber).getSpace(searchLocationSpace.spaceNumber);
+            return getFloor(searchLocationSpace.getFloorNumber()).getSpace(searchLocationSpace.getSpaceNumber());
         }
         else  return null;
     }
@@ -213,7 +214,7 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
 
         LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
-            getFloor(searchLocationSpace.floorNumber).setSpace(searchLocationSpace.spaceNumber, newOffice);
+            getFloor(searchLocationSpace.getFloorNumber()).setSpace(searchLocationSpace.getSpaceNumber(), newOffice);
         }
     }
     //метод добавления офиса в здание по номеру офиса в здании и ссылке на офис
@@ -221,7 +222,7 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
     {
         LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
-            getFloor(searchLocationSpace.floorNumber).addNewSpace(searchLocationSpace.spaceNumber, newFlat);
+            getFloor(searchLocationSpace.getFloorNumber()).addNewSpace(searchLocationSpace.getSpaceNumber(), newFlat);
         }
         else getFloor(getSize()-1).addNewSpace(number-getCountSpace()+ getFloor(getSize()-1).getSize(), newFlat);
     }
@@ -230,7 +231,7 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
     {
         LocationSpaceDTO searchLocationSpace = getLocationOffice(number); //todo
         if(searchLocationSpace!=null) {
-            getFloor(searchLocationSpace.floorNumber).removeSpace(searchLocationSpace.spaceNumber);
+            getFloor(searchLocationSpace.getFloorNumber()).removeSpace(searchLocationSpace.getSpaceNumber());
         }
     }
     //метод получения самого большого по площади офиса здания

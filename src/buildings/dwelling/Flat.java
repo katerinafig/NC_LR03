@@ -1,23 +1,24 @@
-package buildings;
+package buildings.dwelling;
+import buildings.exception.InvalidRoomsCountException;
+import buildings.exception.InvalidSpaceAreaException;
 import buildings.interfaces.Space;
-import buildings.exception.*;
 
 import java.io.Serializable;
 
-public class Office implements Space,Cloneable, Serializable {
-    private static final int  DEF_ROOMS = 1;
-    private static final int  DEF_AREA = 250;
+public class Flat  implements Space, Cloneable, Serializable {
+    private static final int  DEF_ROOMS = 2;
+    private static final int  DEF_AREA = 50;
 
     private int area;
     private int numberOfRooms;
 
-    public Office() {
+    public Flat() {
         this(DEF_AREA,DEF_ROOMS);
     }
-    public Office(int area ) {
+    public Flat(int area ) {
         this(area,DEF_ROOMS);
     }
-    public Office(int area, int numberOfRooms) {
+    public Flat(int area, int numberOfRooms) {
         if(area<=0) throw new InvalidSpaceAreaException();
         if(numberOfRooms<=0) throw new InvalidRoomsCountException();
         this.area = area;
@@ -38,21 +39,22 @@ public class Office implements Space,Cloneable, Serializable {
         this.numberOfRooms = numberOfRooms;
     }
     public Object clone() throws CloneNotSupportedException{
+
         return super.clone();
     }
     @Override
     public String toString(){
-        return String.format("Office (%d, %d.0)",numberOfRooms,area);
+        return String.format("Flat (%d, %d.0)",numberOfRooms,area);
     }
     @Override
     public boolean equals(Object obj) {
         if (obj==this) {
             return true;
         }
-        if (!(obj instanceof Office)) {
+        if (!(obj instanceof Flat)) {
             return false;
         }
-        final Office guest = (Office) obj;
+        final Flat guest = (Flat) obj;
         return (this.area==guest.area)&&(this.numberOfRooms==guest.numberOfRooms);
     }
     @Override
@@ -60,3 +62,4 @@ public class Office implements Space,Cloneable, Serializable {
         return area^numberOfRooms;
     }
 }
+
