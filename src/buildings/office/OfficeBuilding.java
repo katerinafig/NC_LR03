@@ -8,6 +8,7 @@ import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 public class OfficeBuilding implements Building, Cloneable, Serializable {
     private class Node implements Cloneable,Serializable{
@@ -295,6 +296,9 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
         currentCloneNode.next=clone.head;
         return  clone;
     }
+    public Iterator<Floor> iterator(){
+        return new OfficeIterator();
+    }
     @Override
     public String toString(){
         StringBuilder finalString = new StringBuilder();
@@ -341,6 +345,21 @@ public class OfficeBuilding implements Building, Cloneable, Serializable {
         }
         while (currentNode!=head);
         return hashcode;
+    }
+    private class OfficeIterator implements Iterator<Floor>
+    {
+        private int position;
+        public OfficeIterator(int count){this.position=count;}
+        public OfficeIterator(){this.position=0;}
+        public boolean hasNext()
+        {
+            return position<size;
+        }
+
+        public Floor next(){
+            position++;
+            return getFloor(position);
+        }
     }
 }
 

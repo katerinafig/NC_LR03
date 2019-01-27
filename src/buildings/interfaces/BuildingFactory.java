@@ -1,9 +1,9 @@
 package buildings.interfaces;
 
 public interface BuildingFactory {
-    Space createSpace(double area);
+    Space createSpace(int area);
 
-    Space createSpace(int roomsCount, double area);
+    Space createSpace(int roomsCount, int area);
 
     Floor createFloor(int spacesCount);
 

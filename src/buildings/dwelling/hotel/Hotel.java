@@ -4,8 +4,6 @@ import buildings.dwelling.Dwelling;
 import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class Hotel extends Dwelling {
     //Конструктор может принимать количество этажей и массив количества помещений по этажам

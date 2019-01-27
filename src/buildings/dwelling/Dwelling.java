@@ -7,6 +7,7 @@ import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 public class Dwelling implements Building, Cloneable, Serializable {
     private int size;
@@ -43,16 +44,16 @@ public class Dwelling implements Building, Cloneable, Serializable {
     //метод получения общей площади квартир дома
     public int getAreaSpace() {
         int areaFlats = 0;
-        for(int i=0;i<size;i++) {
-            areaFlats += arrayFloors[i].getAreaSpace();
+        for(Floor currentFloor: arrayFloors) {
+            areaFlats += currentFloor.getAreaSpace();
         }
         return areaFlats;
     }
     //метод получения общего количества комнат дома
     public int getCountRoomsOnBuilding() {
         int countRooms = 0;
-        for(int i=0;i<getSize();i++) {
-            countRooms += arrayFloors[i].getCountRoomsOnSpace();
+        for(Floor currentFloor: arrayFloors) {
+            countRooms += currentFloor.getCountRoomsOnSpace();
         }
         return countRooms;
     }
@@ -139,8 +140,8 @@ public class Dwelling implements Building, Cloneable, Serializable {
     //метод получения самой большой по площади квартиры дома
     public Space getBestSpace(){
         Space flatMaxArea = arrayFloors[0].getBestSpace();
-        for(int i=1;i<size;i++) {
-            Space currentSpace = arrayFloors[i].getBestSpace();
+        for(Floor currentFloor: arrayFloors) {
+            Space currentSpace = currentFloor.getBestSpace();
             if(flatMaxArea.getArea() < currentSpace.getArea())
             {
                 flatMaxArea = currentSpace;
@@ -179,12 +180,15 @@ public class Dwelling implements Building, Cloneable, Serializable {
         }
         return result;
     }
+    public Iterator<Floor> iterator(){
+        return  new DwellingIterator();
+    }
     @Override
     public String toString(){
         StringBuilder finalString = new StringBuilder();
         finalString.append("Dwelling (").append(size).append(", ");
-        for (int i=0;i<size;i++) {
-            finalString.append(arrayFloors[i].toString()).append(", ");
+        for (Floor currentFloor: arrayFloors) {
+            finalString.append(currentFloor.toString()).append(", ");
         }
         return finalString.delete(finalString.length()-2,finalString.length()).append(")").toString();
     }
@@ -213,5 +217,20 @@ public class Dwelling implements Building, Cloneable, Serializable {
             hashcode^=arrayFloors[i].hashCode();
         }
         return hashcode;
+    }
+    private class DwellingIterator implements Iterator<Floor>
+    {
+        private int position;
+        public DwellingIterator(int count){this.position=count;}
+        public DwellingIterator(){this.position=0;}
+        public boolean hasNext()
+        {
+            return position<size;
+        }
+
+        public Floor next(){
+            position++;
+            return arrayFloors[position];
+        }
     }
 }

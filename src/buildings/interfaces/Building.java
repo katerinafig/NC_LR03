@@ -1,5 +1,7 @@
 package buildings.interfaces;
 
+import java.util.Iterator;
+
 public interface Building {
     //метод получения количества этажей в здании
     public int getSize();
@@ -29,4 +31,5 @@ public interface Building {
     public Space [] sortByAreaSpace();
     public void checkBounds(int number);
     Object clone()throws CloneNotSupportedException;
+    Iterator<Floor> iterator();
 }

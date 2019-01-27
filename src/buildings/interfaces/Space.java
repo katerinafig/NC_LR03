@@ -1,6 +1,8 @@
 package buildings.interfaces;
 
-public interface Space {
+import java.io.Serializable;
+
+public interface Space extends Comparable<Space> {
 
     int getArea();
     void setArea(int area);

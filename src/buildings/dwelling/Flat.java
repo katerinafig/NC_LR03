@@ -42,6 +42,9 @@ public class Flat  implements Space, Cloneable, Serializable {
 
         return super.clone();
     }
+    public int compareTo(Space o){
+        return Integer.compare(getArea(), o.getArea());
+    }
     @Override
     public String toString(){
         return String.format("Flat (%d, %d.0)",numberOfRooms,area);

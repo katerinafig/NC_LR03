@@ -4,6 +4,7 @@ import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 public class DwellingFloor implements Floor,Cloneable, Serializable {
     private int size;
@@ -111,6 +112,10 @@ public class DwellingFloor implements Floor,Cloneable, Serializable {
         }
         return result;
     }
+    public int compareTo(Floor o){
+        return Integer.compare(size, o.getSize());
+    }
+    public Iterator<Space> iterator(){ return new DwellingFloorIterator();}
     @Override
     public String toString(){
         StringBuilder finalString = new StringBuilder();
@@ -149,5 +154,19 @@ public class DwellingFloor implements Floor,Cloneable, Serializable {
         }
         return hashcode;
     }
+    private class DwellingFloorIterator implements Iterator<Space>
+    {
+        private int position;
+        public DwellingFloorIterator(int count){this.position=count;}
+        public DwellingFloorIterator(){this.position=0;}
+        public boolean hasNext()
+        {
+            return position<size;
+        }
 
+        public Space next(){
+            position++;
+            return arrayFlat[position];
+        }
+    }
 }
