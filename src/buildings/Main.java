@@ -1,11 +1,14 @@
 package buildings;
 
 import buildings.dwelling.Dwelling;
+import buildings.dwelling.DwellingFloor;
 import buildings.dwelling.Flat;
 import buildings.interfaces.Building;
+import buildings.interfaces.Floor;
 import buildings.office.Office;
 import buildings.office.OfficeBuilding;
 import buildings.office.OfficeFloor;
+import buildings.threads.*;
 
 import java.io.*;
 
@@ -97,6 +100,25 @@ public class Main {
             fis2.close();
             System.out.println("Исходный: "+dwelling.toString());
 
+            //Демонстрация нитей
+            Floor floor1 = new OfficeFloor(new Office[]{new Office(110, 1), new Office(320, 2), new Office(120, 3)});
+            Floor floor2 = new DwellingFloor(new Flat[]{new Flat(550, 1), new Flat(240, 2), new Flat(890, 3)});
+            Floor floor3 = new OfficeFloor(new Office[]{new Office(80, 1), new Office(45, 2), new Office(345, 3)});
+            Semaphore semaphore1 = new Semaphore(true);
+            Semaphore semaphore2 = new Semaphore(true);
+            Semaphore semaphore3 = new Semaphore(true);
+            Thread repairer1 = new Thread(new SequentalRepairer(floor1,semaphore1));
+            Thread repairer2 = new Thread(new SequentalRepairer(floor2,semaphore2));
+            Thread repairer3 = new Thread(new SequentalRepairer(floor3,semaphore3));
+            Thread cleaner1 = new Thread(new SequentalCleaner(floor1,semaphore1));
+            Thread cleaner2 = new Thread(new SequentalCleaner(floor2,semaphore2));
+            Thread cleaner3 = new Thread(new SequentalCleaner(floor3,semaphore3));
+            repairer1.start();
+            repairer2.start();
+            repairer3.start();
+            cleaner1.start();
+            cleaner2.start();
+            cleaner3.start();
 
         } catch (IOException ex2) {
             System.out.println("IOex");

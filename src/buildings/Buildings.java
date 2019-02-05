@@ -197,6 +197,9 @@ public class Buildings {
             }
         }
     }
+    public static Floor synchronizedFloor (Floor floor) {
+        return new SynchronizedFloor(floor);
+    }
 
 
 }
