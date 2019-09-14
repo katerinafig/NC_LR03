@@ -7,38 +7,82 @@ import buildings.interfaces.Floor;
 import buildings.interfaces.Space;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Buildings {
-    private static BuildingFactory buildingFactory = new DwellingFactory();
+    private static BuildingFactory buildingFactory;
 
     //метод, позволяющий, устанавливать ссылку на текущую конкретную фабрику.
     public static void setBuildingFactory(BuildingFactory buildingFactory) {
         Buildings.buildingFactory = buildingFactory;
     }
 
-    public static Space createSpace(int area) {
-        return buildingFactory.createSpace(area);
+    public static Space createSpace(int area, Class spaceClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Constructor[] constructors = spaceClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==1&& paramTypes[0].getName().equals("int")) {
+                return (Space) constructor.newInstance(area);
+            }
+        }
+        return null;
     }
 
-    public static Space createSpace(int roomsCount, int area) {
-        return buildingFactory.createSpace(roomsCount, area);
+    public static Space createSpace(int roomsCount, int area, Class spaceClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Constructor[] constructors = spaceClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==2&& paramTypes[0].getName().equals("int")&&paramTypes[1].getName().equals("int")) {
+                return (Space) constructor.newInstance(area,roomsCount);
+            }
+        }
+        return null;
     }
 
-    public static Floor createFloor(int spacesCount) {
-        return buildingFactory.createFloor(spacesCount);
+    public static Floor createFloor(int spacesCount, Class floorClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor[] constructors = floorClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==1&& paramTypes[0].getName().equals("int")) {
+                return (Floor) constructor.newInstance(spacesCount);
+            }
+        }
+        return null;
     }
 
-    public static Floor createFloor(Space[] spaces) {
-        return buildingFactory.createFloor(spaces);
+    public static Floor createFloor(Space[] spaces, Class floorClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor[] constructors = floorClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==1&& paramTypes[0].getName().equals("[Lbuildings.interfaces.Space;")) {
+                return (Floor) constructor.newInstance((Object) spaces);
+            }
+        }
+        return null;
     }
 
-    public static Building createBuilding(int floorsCount, int[] spacesCounts) {
-        return buildingFactory.createBuilding(floorsCount, spacesCounts);
+    public static Building createBuilding(int floorsCount, int[] spacesCounts, Class buildingClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor[] constructors = buildingClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==2&&paramTypes[0].getName().equals("int")&& paramTypes[1].getName().equals("[I")) {
+                return (Building) constructor.newInstance(floorsCount,spacesCounts);
+            }
+        }
+        return null;
     }
 
-    public static Building createBuilding(Floor[] floors) {
-        return buildingFactory.createBuilding(floors);
+    public static Building createBuilding(Floor[] floors, Class buildingClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor[] constructors = buildingClass.getConstructors();
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            if(paramTypes.length==1&& paramTypes[0].getName().equals("[Lbuildings.interfaces.Floor;")) {
+                return (Building) constructor.newInstance((Object)floors);
+            }
+        }
+        return null;
     }
 
     //Метод записи данных о здании в байтовый поток
@@ -60,7 +104,8 @@ public class Buildings {
     }
 
     //Метод чтения данных о здании из байтового потока
-    public static Building inputBuilding(InputStream in) throws IOException {
+    public static Building inputBuilding(InputStream in)
+            throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
         Floor floor;
         int countSpaces, area, numberOfRooms;
         DataInputStream dataInputStream = new DataInputStream(in);
@@ -72,7 +117,7 @@ public class Buildings {
             for (int j = 0; j < countSpaces; j++) {
                 numberOfRooms = dataInputStream.readInt();
                 area = dataInputStream.readInt();
-                floor.addNewSpace(j, buildingFactory.createSpace(numberOfRooms, area));
+                Objects.requireNonNull(floor).addNewSpace(j, buildingFactory.createSpace(numberOfRooms,area));
             }
             arrayFloors[i] = floor;
         }
@@ -99,7 +144,8 @@ public class Buildings {
     }
 
     //Метод чтения здания из символьного потока
-    public static Building readBuilding(Reader in) throws IOException {
+    public static Building readBuilding(Reader in, Class buildingClass, Class floorClass, Class spaceClass)
+            throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
         int rooms, area;
         StreamTokenizer streamTokenizer = new StreamTokenizer(in);
         streamTokenizer.nextToken();
@@ -112,12 +158,12 @@ public class Buildings {
                 rooms = (int) streamTokenizer.nval;
                 streamTokenizer.nextToken();
                 area = (int) streamTokenizer.nval;
-                spaces[j] = buildingFactory.createSpace(rooms, area);
+                spaces[j] = createSpace(rooms, area, spaceClass);
                 streamTokenizer.nextToken();
             }
-            floors[i] = buildingFactory.createFloor(spaces);
+            floors[i] = createFloor(spaces,floorClass);
         }
-        return buildingFactory.createBuilding(floors);
+        return createBuilding(floors,buildingClass);
     }
 
     //Метод сериализации здания в байтовый поток
@@ -158,20 +204,21 @@ public class Buildings {
     }
 
     //Метод текстового чтения с помощью класса Scanner
-    public static Building readBuilding(Scanner scanner) {
+    public static Building readBuilding(Scanner scanner, Class buildingClass, Class floorClass, Class spaceClass)
+            throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
         int sizeOfBuilding = scanner.nextInt();
         Floor[] floors = new Floor[sizeOfBuilding];
         for (int i = 0; i < sizeOfBuilding; i++) {
             int sizeOfFloor = scanner.nextInt();
-            floors[i] = buildingFactory.createFloor(sizeOfFloor);
+            floors[i] = createFloor(sizeOfFloor,floorClass);
             for (int j = 0; j < sizeOfFloor; j++) {
                 int roomCount = scanner.nextInt();
                 int area = scanner.nextInt();
-                floors[i].setSpace(j, buildingFactory.createSpace(roomCount, area));
+                Objects.requireNonNull(floors[i]).setSpace(j, createSpace(roomCount, area,spaceClass));
 
             }
         }
-        return buildingFactory.createBuilding(floors);
+        return createBuilding(floors,buildingClass);
     }
 
     public static <T extends Comparable<T>> void sortUp(T[] objects) {
@@ -187,6 +234,7 @@ public class Buildings {
     }
 
     public static <T> void sortDown(T[] objects, Comparator<T> comparator) {
+
         for (int i = objects.length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (comparator.compare(objects[j], objects[j + 1]) > 0) {

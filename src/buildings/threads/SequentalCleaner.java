@@ -12,7 +12,7 @@ public class SequentalCleaner implements Runnable{
 
     @Override
     public void run() {
-        semaphore.lock(false);
+        semaphore.lock(true);
         for(int i=0;i<floor.getSize();i++){
             System.out.println("Cleaner space number "
                     +(i+1)

@@ -13,7 +13,7 @@ public class SequentalRepairer implements Runnable {
     }
     @Override
     public void run() {
-        semaphore.lock(true);
+        semaphore.lock(false);
         for(int i=0;i<floor.getSize();i++){
             System.out.println("Repairing space number "
                     +(i+1)

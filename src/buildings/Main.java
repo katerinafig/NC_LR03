@@ -3,14 +3,18 @@ package buildings;
 import buildings.dwelling.Dwelling;
 import buildings.dwelling.DwellingFloor;
 import buildings.dwelling.Flat;
+import buildings.dwelling.hotel.Hotel;
+import buildings.dwelling.hotel.HotelFloor;
 import buildings.interfaces.Building;
 import buildings.interfaces.Floor;
+import buildings.interfaces.Space;
 import buildings.office.Office;
 import buildings.office.OfficeBuilding;
 import buildings.office.OfficeFloor;
 import buildings.threads.*;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 public class Main {
 
@@ -69,24 +73,24 @@ public class Main {
             ofbnewClone.setSpace(1, new Office(234, 9));
             System.out.println(ofb.toString());
             System.out.println(ofbnewClone.toString());
+            System.out.println(PlacementExchanger.isFloorExchange(dwelling.getArrayFloors()[0], ofnew));
 
             //Демонстрация байтовых записи и чтения
-            System.out.println();
+            System.out.println("Демонстрация байтовых записи и чтения");
             FileOutputStream fos = new FileOutputStream("src/example.bin");
             Buildings.outputBuilding(ofb, fos);
             fos.close();
             FileInputStream fis = new FileInputStream("src/example.bin");
-            System.out.println(PlacementExchanger.isFloorExchange(dwelling.getArrayFloors()[0], ofnew));
             System.out.println(Buildings.inputBuilding(fis));
             fis.close();
 
             //Демонстрация символьных записи и чтения
-            System.out.println();
+            System.out.println("Демонстрация символьных записи и чтения");
             FileWriter writer = new FileWriter("src/example2.txt");
             Buildings.writeBuilding(ofb, writer);
             writer.close();
             FileReader reader = new FileReader("src/example2.txt");
-            System.out.println(Buildings.readBuilding(reader));
+            System.out.println(Buildings.readBuilding(reader,Hotel.class,HotelFloor.class,Flat.class));
             reader.close();
 
             //Демонстрация сериализации и десериализации
@@ -101,12 +105,12 @@ public class Main {
             System.out.println("Исходный: "+dwelling.toString());
 
             //Демонстрация нитей
-            Floor floor1 = new OfficeFloor(new Office[]{new Office(110, 1), new Office(320, 2), new Office(120, 3)});
+            /*Floor floor1 = new OfficeFloor(new Office[]{new Office(110, 1), new Office(320, 2), new Office(120, 3)});
             Floor floor2 = new DwellingFloor(new Flat[]{new Flat(550, 1), new Flat(240, 2), new Flat(890, 3)});
             Floor floor3 = new OfficeFloor(new Office[]{new Office(80, 1), new Office(45, 2), new Office(345, 3)});
-            Semaphore semaphore1 = new Semaphore(true);
-            Semaphore semaphore2 = new Semaphore(true);
-            Semaphore semaphore3 = new Semaphore(true);
+            Semaphore semaphore1 = new Semaphore();
+            Semaphore semaphore2 = new Semaphore();
+            Semaphore semaphore3 = new Semaphore();
             Thread repairer1 = new Thread(new SequentalRepairer(floor1,semaphore1));
             Thread repairer2 = new Thread(new SequentalRepairer(floor2,semaphore2));
             Thread repairer3 = new Thread(new SequentalRepairer(floor3,semaphore3));
@@ -118,7 +122,19 @@ public class Main {
             repairer3.start();
             cleaner1.start();
             cleaner2.start();
-            cleaner3.start();
+            cleaner3.start();*/
+
+
+            //проверка рефлексии
+            Space spaceReflect1 = Buildings.createSpace(2,30,Flat.class);
+            Space spaceReflect2 = Buildings.createSpace(1,70,Flat.class);
+            Space spaceReflect3 = Buildings.createSpace(3,780,Flat.class);
+            Floor floorReflect= Buildings.createFloor(new Space[]{spaceReflect1,spaceReflect2,spaceReflect3}, HotelFloor.class);
+           if(floorReflect!=null)
+            System.out.println("floor Reflection : "+floorReflect.toString());
+           Building buildingReflect = Buildings.createBuilding(new Floor[]{floorReflect}, Hotel.class);
+            if(buildingReflect!=null)
+                System.out.println("building Reflection : "+buildingReflect.toString());
 
         } catch (IOException ex2) {
             System.out.println("IOex");
@@ -126,6 +142,8 @@ public class Main {
             System.out.println("Cloneable not implemented");
         }catch (ClassNotFoundException ex3) {
             System.out.println("ClassNotFoundException");
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            System.out.println("Bad Reflection");
         }
 
 
